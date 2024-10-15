@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use("/phrases", phrasesRouter);
+app.use("/api/phrases", phrasesRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
