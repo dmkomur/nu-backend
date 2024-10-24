@@ -16,7 +16,7 @@ const getAllPhrases = async (_, res) => {
 
 const getPhrases = async (req, res) => {
     const { theme = "", limit = 48, page = 1 } = req.query;
-    let whereClause = "";
+    let whereClause = "ORDER BY RAND()";
     if (theme !== "Все") {
         whereClause = `WHERE theme = '${theme}'`;
     }
