@@ -10,8 +10,7 @@ const { PORT = 3000 } = process.env;
         const pool = await connectToDatabase();
         await pool.query("SELECT 1");
 
-        await fetchAndSaveNews();
-        console.log("Новости загружены и записаны в базу данных");
+        setInterval(fetchAndSaveNews, 10800000);
 
         app.listen(PORT, () => {
             console.log(`Example app listening on port - ${PORT}`);
