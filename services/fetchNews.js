@@ -12,23 +12,30 @@ export async function fetchAndSaveNews() {
         if (response.data && Array.isArray(response.data.articles)) {
             const newsData = response.data.articles;
 
-            // Очистка старых данных перед добавлением новых (по желанию)
-            await pool.query("DELETE FROM news_articles");
-
             for (const article of newsData) {
-                await pool.query(
-                    "INSERT INTO news_articles (title, description, content, url, image, publishedAt, source_name, source_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    [
-                        article.title,
-                        article.description || "", // Обработка случая, если поле пустое
-                        article.content || "",
-                        article.url,
-                        article.image || "",
-                        new Date(article.publishedAt),
-                        article.source.name || "", // Добавление source.name
-                        article.source.url || "",
-                    ]
-                );
+                try {
+                    await pool.query(
+                        "INSERT INTO news_articles (title, description, content, url, image, publishedAt, source_name, source_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            article.title,
+                            article.description || "",
+                            article.content || "",
+                            article.url,
+                            article.image || "",
+                            new Date(article.publishedAt),
+                            article.source.name || "",
+                            article.source.url || "",
+                        ]
+                    );
+                } catch (error) {
+                    if (error.code === "ER_DUP_ENTRY") {
+                        console.log(
+                            `Новость "${article.title}" уже существует в базе данных, пропускаем.`
+                        );
+                    } else {
+                        console.error("Ошибка при вставке новости:", error);
+                    }
+                }
             }
             console.log("Новости успешно обновлены в базе данных");
         } else {

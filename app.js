@@ -4,6 +4,7 @@ import logger from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
 import phrasesRouter from "./routes/phrases-route.js";
+import newsRouter from "./routes/news-route.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.use("/api/phrases", phrasesRouter);
+app.use("/api/news", newsRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
