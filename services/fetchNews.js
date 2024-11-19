@@ -8,19 +8,25 @@ export async function fetchAndSaveNews() {
         const response = await axios.get(
             "https://gnews.io/api/v4/top-headlines?country=ua&category=general&apikey=329b6f5e05a83a64f6209d0652e31c6b"
         );
+
         if (response.data && Array.isArray(response.data.articles)) {
             const newsData = response.data.articles;
+
+            // Очистка старых данных перед добавлением новых (по желанию)
+            await pool.query("DELETE FROM news_articles");
+
             for (const article of newsData) {
                 await pool.query(
                     "INSERT INTO news_articles (title, description, content, url, image, publishedAt, source_name, source_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     [
                         article.title,
-                        article.description,
-                        article.content,
+                        article.description || "", // Обработка случая, если поле пустое
+                        article.content || "",
                         article.url,
-                        article.image,
+                        article.image || "",
                         new Date(article.publishedAt),
-                        article.source.url,
+                        article.source.name || "", // Добавление source.name
+                        article.source.url || "",
                     ]
                 );
             }
