@@ -4,6 +4,7 @@ import { connectToDatabase } from "../config/db.js";
 export async function fetchAndSaveNews() {
     try {
         const pool = await connectToDatabase();
+        console.log("✅ Подключение к базе MariaDB установлено!");
 
         const response = await axios.get(
             "https://gnews.io/api/v4/top-headlines?country=ua&category=general&apikey=329b6f5e05a83a64f6209d0652e31c6b"
@@ -13,6 +14,8 @@ export async function fetchAndSaveNews() {
             const newsData = response.data.articles;
 
             for (const article of newsData) {
+                console.log("Добавляем статью:", article);
+
                 try {
                     await pool.query(
                         "INSERT INTO news_articles (title, description, content, url, image, publishedAt, source_name, source_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -22,7 +25,7 @@ export async function fetchAndSaveNews() {
                             article.content || "",
                             article.url,
                             article.image || "",
-                            new Date(article.publishedAt),
+                            article.publishedAt || "",
                             article.source.name || "",
                             article.source.url || "",
                         ]
