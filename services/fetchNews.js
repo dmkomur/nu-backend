@@ -27,6 +27,7 @@ export async function fetchAndSaveNews() {
                             article.source.url || "",
                         ]
                     );
+                    console.log("got news");
                 } catch (error) {
                     if (error.code === "ER_DUP_ENTRY") {
                         console.log(
