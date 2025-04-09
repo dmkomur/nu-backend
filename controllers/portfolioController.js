@@ -1,5 +1,6 @@
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import { connectToDatabase } from "../config/db.js";
+import { projectList } from "../services/getProjects.js";
 
 const getPortfolio = async (_, res) => {
     try {
@@ -13,7 +14,11 @@ const getPortfolio = async (_, res) => {
         res.status(500).json({ message: "Error fetching news" });
     }
 };
+const getSavedPortfolio = async (_, res) => {
+    res.status(200).json(projectList);
+};
 
 export default {
     getPortfolio: ctrlWrapper(getPortfolio),
+    getSavedPortfolio: ctrlWrapper(getSavedPortfolio),
 };
